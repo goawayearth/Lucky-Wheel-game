@@ -25,20 +25,22 @@ for(let i = 0 ; i < textAll.length ; i++){
 var isFlag = false;
 var pauseRunBtnIsOk = false;
 let timer = null;
+var rate = 0.01;
+let basic = 1800;
 function run(angle){
     let begin = 0; 
-    
-    let basic = 1800;
     pauseRunBtnIsOk = true;
     timer = setInterval(function(){
         if(begin >= (basic+angle)){
             isFlag=true;
             pauseRunBtnIsOk = false;
+            rate = 0.1;
+            basic = 1800;
             clearInterval(timer);
         }
         wapper.style.transform="rotate("+(begin)+"deg)";
         // 这是一个算法 可以出现转盘又很快到慢慢变慢的效果
-        begin+=Math.ceil(basic+angle-begin)*0.1;
+        begin+=Math.ceil(basic+angle-begin)*rate;
 
     },70);
 }
@@ -140,3 +142,13 @@ pauseRunBtn.onclick=function(){
 
 }
 
+speedUpBtn.onclick=function(){
+    if(pauseRunBtnIsOk){
+        rate = 0.1;
+        basic = 3600;
+    }
+    else{
+        alert("当前状态下不能使用！");
+    }
+    
+}

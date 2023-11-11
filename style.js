@@ -25,8 +25,9 @@ for(let i = 0 ; i < textAll.length ; i++){
 var isFlag = false;
 var pauseRunBtnIsOk = false;
 let timer = null;
-var rate = 0.01;
+var rate = 0.1;
 let basic = 1800;
+var isOpti = true;
 function run(angle){
     let begin = 0; 
     pauseRunBtnIsOk = true;
@@ -34,11 +35,18 @@ function run(angle){
         if(begin >= (basic+angle)){
             isFlag=true;
             pauseRunBtnIsOk = false;
-            rate = 0.1;
+            rate = 0.05;
             basic = 1800;
+            isOpti = true;
             clearInterval(timer);
         }
-        wapper.style.transform="rotate("+(begin)+"deg)";
+        if(isOpti){
+            wapper.style.transform="rotate("+(begin)+"deg)";
+        }
+        else{
+            wapper.style.transform="rotate("+(-begin)+"deg)";
+        }
+        
         // 这是一个算法 可以出现转盘又很快到慢慢变慢的效果
         begin+=Math.ceil(basic+angle-begin)*rate;
 
@@ -62,7 +70,7 @@ function getLucky(){
 
     // 获奖的内容
     let text = prize[randomIndex];
-
+    console.log(text);
     switch(randomIndex){
         case 0:
             run(22.5);
@@ -149,6 +157,15 @@ speedUpBtn.onclick=function(){
     }
     else{
         alert("当前状态下不能使用！");
+    }
+    
+}
+
+reverseRunBtn.onclick = function(){
+    if(isFlag){
+        isFlag=false;
+        isOpti = false;
+        getLucky();
     }
     
 }

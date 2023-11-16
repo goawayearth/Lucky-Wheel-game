@@ -9,6 +9,7 @@ let reverseRunBtn = document.getElementById("reverse-run");
 let circleBtn = document.getElementById("circle");
 let selectModel = document.getElementById("select_model");
 let randomModel = document.getElementById("random-model");
+let textArea = document.getElementById("show2");
 
 // 一些全局参数
 let isFlag = false; // 记录当前是否可以点击旋转按钮
@@ -19,6 +20,8 @@ let basic = 3600; // 默认旋转圈数
 let isOpti = true; // 标记正转还是反转
 let isStart = true; // 标记游戏是否开始
 let model = 0;//选择的抽奖类型
+let prizeText = "";// 抽中的奖项
+let niName = "";//抽奖者的名字
 
 // 这里是奖项的名字
 let prize = [["数码1号","数码2号","数码3号","数码4号","数码5号","数码6号","数码7号","未中奖"],
@@ -31,20 +34,6 @@ let prizeWeight = [1,3,5,7,10,15,20,30];
 // 给每一个div赋予文字，最开始的默认值
 for(let i = 0 ; i < textAll.length ; i++){
     textAll[i].innerHTML = prize[model][i];
-}
-
-// 给转盘每个扇形赋值的函数
-function getText(){
-    var m = selectModel.value;
-    switch (m){
-        case "option1":model = 0;break;
-        case "option2":console.log("家电");model = 1;break;
-        case "option3":model = 2;break;
-        default:console.log("默认");model=0;break;
-    }
-    for(let i = 0 ; i < textAll.length ; i++){
-        textAll[i].innerHTML = prize[model][i];
-    }
 }
 
 // 当选择的奖品类型发生变化的触发函数，会给扇形重新赋值
@@ -74,99 +63,13 @@ randomModel.onclick = function() {
     }, 200);
 }
 
-
-// 扇形发生转动的最核心的模块
-function run(angle){
-    let begin = 0; 
-    pauseRunBtnIsOk = true;
-    timer = setInterval(function(){
-        if(begin >= (basic+angle)){
-            isFlag=true;
-            pauseRunBtnIsOk = false;
-            rate = 0.02;
-            basic = 3600;
-            isOpti = true;
-            clearInterval(timer);
-        }
-        if(isOpti){
-            wapper.style.transform="rotate("+(begin)+"deg)";
-        }
-        else{
-            wapper.style.transform="rotate("+(-begin)+"deg)";
-        }
-        
-        // 这是一个算法 可以出现转盘又很快到慢慢变慢的效果
-        begin+=Math.ceil(basic+angle-begin)*rate;
-
-    },70);
-}
-
-
-// 转轮开始旋转
-function getLucky(){
-    //获取30以内的随机数
-    let weightRandom = parseInt(Math.random()*30);
-    // 合并
-    let concatAfterArr = prizeWeight.concat(weightRandom);
-    // 排序
-    let  sortedWeightArr  = concatAfterArr.sort(function(a,b){ return a-b });
-
-    // randomIndex是奖项的索引 结果是【1,7】
-    let randomIndex = sortedWeightArr.indexOf(weightRandom);
-    randomIndex = Math.min(randomIndex, prize.length -1); 
-
-    // 获奖的内容
-    let text = prize[model][randomIndex];
-    console.log("中奖奖项"+text);
-    switch(randomIndex) {
-        case 0:
-            run(22.5);
-            break;
-        case 1:
-            run(66.5);
-            break;
-        case 2:
-            run(112.5);
-            break;
-        case 3:
-            run(157.5);
-            break;
-        case 4:
-            run(338.5);
-            break;
-        case 5:
-            run(294.5);
-            break;
-        case 6:
-            run(247.5);
-            break;
-        case 7:
-            run(201.5);
-            break;
-    }
-}
-
-circleBtn.onclick=function(){
-    if(isFlag){
-        isFlag=false;
-        getLucky();
-    }
-};
-// 开始按钮
-startRunBtn.onclick=function(){
-    if(isFlag){
-        isFlag=false;
-        getLucky();
-    }
-};
-
 startGameBtn.onclick=function(){
     if(isStart){
         isStart=false;
         isFlag=true;
-        let name = prompt("请输入您的名字：");
-        while(!name){
-            name = prompt("请重新输入您的名字：");
+        niName = prompt("请输入您的名字：");
+        while(!niName){
+            niName = prompt("请重新输入您的名字：");
         }
         startGameBtn.style.backgroundColor = "dimgray";
         startRunBtn.style.backgroundColor = "#f2552e";
@@ -180,7 +83,20 @@ startGameBtn.onclick=function(){
         reverseRunBtn.style.cursor = "pointer"
         circleBtn.style.cursor = "pointer";
     }
-        
+};
+
+circleBtn.onclick=function(){
+    if(isFlag){
+        isFlag=false;
+        getLucky();
+    }
+};
+// 开始按钮
+startRunBtn.onclick=function(){
+    if(isFlag){
+        isFlag=false;
+        getLucky();
+    }
 };
 
 pauseRunBtn.onclick=function(){
@@ -215,4 +131,93 @@ reverseRunBtn.onclick = function(){
     
 }
 
+// 给转盘每个扇形赋值的函数
+function getText(){
+    var m = selectModel.value;
+    switch (m){
+        case "option1":model = 0;break;
+        case "option2":console.log("家电");model = 1;break;
+        case "option3":model = 2;break;
+        default:console.log("默认");model=0;break;
+    }
+    for(let i = 0 ; i < textAll.length ; i++){
+        textAll[i].innerHTML = prize[model][i];
+    }
+}
 
+
+// 扇形发生转动的最核心的模块
+function run(angle){
+    let begin = 0;
+    pauseRunBtnIsOk = true;
+    timer = setInterval(function(){
+        if(begin >= (basic+angle)){
+            isFlag=true;
+            pauseRunBtnIsOk = false;
+            rate = 0.02;
+            basic = 3600;
+            isOpti = true;
+            clearInterval(timer);
+            let date = new Date();
+            let str = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+" "+niName+"获得:"+prizeText+"<br>";
+            let str1 = textArea.innerHTML;
+            str = str + str1;
+            textArea.innerHTML = str;
+        }
+        if(isOpti){
+            wapper.style.transform="rotate("+(begin)+"deg)";
+        }
+        else{
+            wapper.style.transform="rotate("+(-begin)+"deg)";
+        }
+
+        // 这是一个算法 可以出现转盘又很快到慢慢变慢的效果
+        begin+=Math.ceil(basic+angle-begin)*rate;
+
+    },70);
+}
+
+
+// 转轮开始旋转
+function getLucky(){
+    //获取30以内的随机数
+    let weightRandom = parseInt(Math.random()*30);
+    // 合并
+    let concatAfterArr = prizeWeight.concat(weightRandom);
+    // 排序
+    let  sortedWeightArr  = concatAfterArr.sort(function(a,b){ return a-b });
+
+    // randomIndex是奖项的索引 结果是【1,7】
+    let randomIndex = sortedWeightArr.indexOf(weightRandom);
+    randomIndex = Math.min(randomIndex, prize.length -1);
+
+    // 获奖的内容
+    prizeText = prize[model][randomIndex];
+    console.log("中奖奖项"+prizeText);
+    switch(randomIndex) {
+        case 0:
+            run(22.5);
+            break;
+        case 1:
+            run(66.5);
+            break;
+        case 2:
+            run(112.5);
+            break;
+        case 3:
+            run(157.5);
+            break;
+        case 4:
+            run(338.5);
+            break;
+        case 5:
+            run(294.5);
+            break;
+        case 6:
+            run(247.5);
+            break;
+        case 7:
+            run(201.5);
+            break;
+    }
+}

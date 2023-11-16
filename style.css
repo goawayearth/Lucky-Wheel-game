@@ -4,6 +4,7 @@
 }
 
 body{
+    background-image: url("./image/bg.jpg");
     /* 让div盒子放到屏幕中间 */
     display: flex;
     justify-content: center;
@@ -74,22 +75,22 @@ body{
 }
 
 .left div.one{
-   background-color: #FC7C7B;
+   background-color: #f61010;
 }
 
 
 .left div.two{
-   background-color: #F59462;
+   background-color: #f3ae16;
    transform:rotate(-45deg);
 }
 
 .left div.three{
-   background-color: #FC7C7B;
+   background-color: #f61010;
    transform:rotate(-90deg);
 }
 
 .left div.four{
-   background-color: #F59462;
+   background-color: #f3ae16;
    transform:rotate(-135deg);
 } 
 
@@ -105,23 +106,23 @@ body{
 
 
 .right div.one{
-   background-color: #FC7C7B;
+   background-color: #f3ae16;
 }
 
 
 .right div.two{
-   background-color: #F59462;;
+   background-color: #f61010;
    transform:rotate(45deg);
 }
 
 .right div.three{
-   background-color: #FC7C7B;;
+   background-color: #f3ae16;
    transform:rotate(90deg);
 }
 
 .right div.four{
  
-   background-color: #fff;
+   background-color: #f61010;
    transform:rotate(135deg);
 } 
 
@@ -189,5 +190,53 @@ body{
    margin-left:20px;
    margin-top:30px;
    cursor: pointer;
+}
+
+select {
+    width: 200px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    border: 2px solid #d75f5f;
+    border-radius: 4px;
+    display: inline-block;
+    }
+select:focus {
+     outline: none;
+     border-color: #999;
+}
+label {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.show{
+    width: 300px;
+    height: 540px;
+    background-color: #ef5252;
+    overflow: scroll;
+    margin-top:8px;
+}
+
+.gekai{
+    width: 50px;
+    height: 300px;
+}
+
+.center-double{
+     display: flex;
+     float: left;
+     width: 300px;
+     height: 300px;
+}
+
+.show2{
+    height: 2000px;
+}
+
+.random-model{
+    width: 80px;
+    height: 40px;
+    cursor: pointer;
 }
 

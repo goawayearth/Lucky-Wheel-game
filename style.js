@@ -6,9 +6,23 @@ let pauseRunBtn = document.getElementById("pause-run");
 let speedUpBtn = document.getElementById("speed-up");
 let reverseRunBtn = document.getElementById("reverse-run");
 let circleBtn = document.getElementById("circle");
+let selectModel = document.getElementById("select_model");
+let randomModel = document.getElementById("random-model");
 
+console.log(randomModel)
+
+var isFlag = false;
+var pauseRunBtnIsOk = false;
+let timer = null;
+var rate = 0.02;
+let basic = 3600;
+var isOpti = true;
+
+let model = 0;//选择的抽奖类型
 // 这里是奖项的名字
-let prize = ["1号大奖","2号大奖","3号大奖","4号大奖","5号大奖","6号大奖","7号大奖","未中奖"];
+let prize = [["数码1号","数码2号","数码3号","数码4号","数码5号","数码6号","数码7号","未中奖"],
+            ["家电1号","家电2号","家电3号","4号家电","5号家电","6号家电","7号家电","未中奖"],
+            ["1号学习","2号学习","3号学习","4号学习","5号学习","6号学习","7号学习","未中奖"]];
     
 // 权重数组 不同奖项的权重值，权重越高越容易中这个区域
 let prizeWeight = [1,3,5,7,10,15,20,30];
@@ -18,16 +32,58 @@ let prizeWeight = [1,3,5,7,10,15,20,30];
 //     return prevValue + curVal;
 // });
 //给每一个div赋予文字
+console.log(typeof (selectModel.value))
+
 for(let i = 0 ; i < textAll.length ; i++){
-    textAll[i].innerHTML = prize[i];  
+    textAll[i].innerHTML = prize[model][i];
 }
 
-var isFlag = false;
-var pauseRunBtnIsOk = false;
-let timer = null;
-var rate = 0.1;
-let basic = 1800;
-var isOpti = true;
+function getText(){
+    var m = selectModel.value;
+    switch (m){
+        case "option1":model = 0;break;
+        case "option2":console.log("家电");model = 1;break;
+        case "option3":model = 2;break;
+        default:console.log("默认");model=0;break;
+    }
+    for(let i = 0 ; i < textAll.length ; i++){
+        textAll[i].innerHTML = prize[model][i];
+    }
+}
+selectModel.onchange = function (){
+    getText();
+}
+
+
+randomModel.onclick = function() {
+
+    let times = 0;
+    let lastSelect = 0;
+    let intervalId = setInterval(function() {
+        times++;
+        if(times > 20){
+            clearInterval(intervalId);
+        }
+        var num = Math.floor(Math.random() * 3);
+        while(num == lastSelect){
+            num = Math.floor(Math.random() * 3);
+        }
+        lastSelect = num;
+        console.log(num);
+        const selectElement = document.querySelector('select');
+        selectElement.selectedIndex = num;
+        //selectModel = num;
+        getText();
+    }, 200);
+
+
+
+}
+
+
+
+
+
 function run(angle){
     let begin = 0; 
     pauseRunBtnIsOk = true;
@@ -35,8 +91,8 @@ function run(angle){
         if(begin >= (basic+angle)){
             isFlag=true;
             pauseRunBtnIsOk = false;
-            rate = 0.05;
-            basic = 1800;
+            rate = 0.02;
+            basic = 3600;
             isOpti = true;
             clearInterval(timer);
         }
@@ -153,7 +209,6 @@ pauseRunBtn.onclick=function(){
 speedUpBtn.onclick=function(){
     if(pauseRunBtnIsOk){
         rate = 0.1;
-        basic = 3600;
     }
     else{
         alert("当前状态下不能使用！");
@@ -169,3 +224,5 @@ reverseRunBtn.onclick = function(){
     }
     
 }
+
+

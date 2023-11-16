@@ -13,44 +13,66 @@
 
 </style>
 <body>
-    
+
 <!-- 首先通过分析观察可以知道这是一个双层次结构，
 所以需要的是div嵌套结构 -->
 <div>
-<div class="outher">
-    <div class="wapper" id="wapper">
-        <div class="left">
-            <!-- 一边4个选项 -->
-                <div class="one"> <span class="text"></span></div>
-                <div class="two"> <span class="text"></span></div>
-                <div class="three"> <span class="text"></span></div>
-                <div class="four"> <span class="text"></span></div>
+    <label > <h2>幸运转盘抽奖</h2></label><br>
+    <select name="select_model" id="select_model">
+        <option value="option1">数码产品</option>
+        <option value="option2">家电</option>
+        <option value="option3">学习用品</option>
+    </select>
+    <button class="random-model" id="random-model">随机选择</button>
+    <div class="outher">
+        <div class="center-double">
+
+            <div class="wapper" id="wapper">
+                <div class="left">
+                    <!-- 一边4个选项 -->
+                    <div class="one"> <span class="text"></span></div>
+                    <div class="two"> <span class="text"></span></div>
+                    <div class="three"> <span class="text"></span></div>
+                    <div class="four"> <span class="text"></span></div>
+                </div>
+                <div class="right">
+                    <div class="one"> <span class="text"></span></div>
+                    <div class="two"> <span class="text"></span></div>
+                    <div class="three"> <span class="text"></span></div>
+                    <div class="four"> <span class="text"></span></div>
+                </div>
+            </div>
+
         </div>
-        <div class="right">
-            <div class="one"> <span class="text"></span></div>
-            <div class="two"> <span class="text"></span></div>
-            <div class="three"> <span class="text"></span></div>
-            <div class="four"> <span class="text"></span></div>
+        <!-- 图形中间的文字 -->
+        <div class="circle" id="circle">
+            抽奖
         </div>
-     
+
     </div>
-    
-    <!-- 图形中间的文字 -->
-    <div class="circle" id="circle">
-        抽奖
+
+    <button class="start-game" id="start-game">开始游戏</button>
+    <div class="btn-group">
+        <button class="btn1 start" id="start-run">转动</button>
+        <button id="pause-run">停止</button>
+    </div>
+    <div class="btn-group">
+        <button class="btn1" id="speed-up">加速</button>
+        <button id="reverse-run">反向</button>
+    </div>
+</div>
+
+<div class="gekai"></div>
+<div class="ss">
+    <label><h2>中奖名单</h2></label>
+    <div class="show" id="show1">
+        <div class="show2">
+
+        </div>
     </div>
 
 </div>
-<button class="start-game" id="start-game">开始游戏</button>
-<div class="btn-group">
-    <button class="btn1 start" id="start-run">转动</button>
-    <button id="pause-run">停止</button>
-</div>
-<div class="btn-group">
-    <button class="btn1" id="speed-up">加速</button>
-    <button id="reverse-run">反向</button>
-</div>
-</div>
+
 <script src="style.js"></script>
 
 </body>

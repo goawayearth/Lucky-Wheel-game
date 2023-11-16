@@ -11,7 +11,8 @@ let selectModel = document.getElementById("select_model");
 let randomModel = document.getElementById("random-model");
 let textArea = document.getElementById("show2");
 let congWords = document.getElementById("conWords");
-
+let stopSelect = document.getElementById("stop-model");
+let stopModelBtn = document.getElementById("stop-model-btn");
 // 一些全局参数
 let isFlag = false; // 记录当前是否可以点击旋转按钮
 let pauseRunBtnIsOk = false; // 记录当前是否可以点击停止按钮
@@ -23,7 +24,7 @@ let isStart = true; // 标记游戏是否开始
 let model = 0;//选择的抽奖类型
 let prizeText = "";// 抽中的奖项
 let niName = "";//抽奖者的名字
-
+let stopModel = 0;//游戏停止的模式，涉及到转动的模式，默认是逐渐停止
 // 这里是奖项的名字
 let prize = [["数码1号","数码2号","数码3号","数码4号","数码5号","数码6号","数码7号","未中奖"],
             ["家电1号","家电2号","家电3号","4号家电","5号家电","6号家电","7号家电","未中奖"],
@@ -42,6 +43,15 @@ selectModel.onchange = function (){
     getText();
 }
 
+stopSelect.onchange = function(){
+    let text = stopSelect.value;
+    if(text == "option1"){
+        stopModel = 0;
+    }
+    else{
+        stopSelect = 1;
+    }
+}
 // 随机选择奖品类型的按钮功能
 randomModel.onclick = function() {
 
@@ -57,12 +67,24 @@ randomModel.onclick = function() {
             num = Math.floor(Math.random() * 3);
         }
         lastSelect = num;
-        console.log(num);
-        const selectElement = document.querySelector('select');
-        selectElement.selectedIndex = num;
+        selectModel.selectedIndex = num;
         getText();
     }, 200);
 }
+
+stopModelBtn.onclick = function(){
+    let times = 0;
+    let intervalId = setInterval(function() {
+        times++;
+        if(times > 20){
+            clearInterval(intervalId);
+        }
+        let num = Math.floor(Math.random() * 2);
+        stopSelect.selectedIndex = num;
+        console.log("停止模式："+num);
+    }, 200);
+}
+
 
 startGameBtn.onclick=function(){
     if(isStart){
@@ -94,42 +116,59 @@ circleBtn.onclick=function(){
 };
 // 开始按钮
 startRunBtn.onclick=function(){
-    if(isFlag){
-        isFlag=false;
-        getLucky();
+    if(stopModel == 0){
+        if(isFlag){
+            isFlag=false;
+            getLucky();
+        }
     }
+    else{
+        //匀速旋转
+    }
+
 };
 
 pauseRunBtn.onclick=function(){
-    if(pauseRunBtnIsOk){
-        isFlag=true;
-        pauseRunBtnIsOk = false;
-        clearInterval(timer);
+    if(stopModel == 0){
+        if(pauseRunBtnIsOk){
+            isFlag=true;
+            pauseRunBtnIsOk = false;
+            clearInterval(timer);
+        }
+        else{
+            alert("当前状态下无法使用该功能！");
+        }
     }
     else{
-        alert("当前状态下无法使用该功能！");
+        //匀速旋转时候的停止
     }
-
-
 }
 
 speedUpBtn.onclick=function(){
-    if(pauseRunBtnIsOk){
-        rate = 0.1;
+    if(stopModel == 0){
+        if(pauseRunBtnIsOk){
+            rate = 0.1;
+        }
+        else{
+            alert("当前状态下不能使用！");
+        }
     }
     else{
-        alert("当前状态下不能使用！");
+        //匀速旋转时候的加速
     }
-    
 }
 
 reverseRunBtn.onclick = function(){
-    if(isFlag){
-        isFlag=false;
-        isOpti = false;
-        getLucky();
+    if(stopModel == 0){
+        if(isFlag){
+            isFlag=false;
+            isOpti = false;
+            getLucky();
+        }
     }
-    
+    else{
+        //匀速旋转时候的反向
+    }
 }
 
 // 给转盘每个扇形赋值的函数

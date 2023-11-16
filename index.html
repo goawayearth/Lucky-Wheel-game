@@ -26,6 +26,12 @@
 所以需要的是div嵌套结构 -->
 <div>
     <label > <h2>幸运转盘抽奖</h2></label><br>
+    <select name="select_model" id="stop-model">
+        <option value="option1">自动停止</option>
+        <option value="option2">点击停止</option>
+    </select>
+    <button class="random-model" id="stop-model-btn">随机选择</button><br>
+
     <select name="select_model" id="select_model">
         <option value="option1">数码产品</option>
         <option value="option2">家电</option>
@@ -34,7 +40,6 @@
     <button class="random-model" id="random-model">随机选择</button>
     <div class="outher">
         <div class="center-double">
-
             <div class="wapper" id="wapper">
                 <div class="left">
                     <!-- 一边4个选项 -->
@@ -50,7 +55,6 @@
                     <div class="four"> <span class="text"></span></div>
                 </div>
             </div>
-
         </div>
         <!-- 图形中间的文字 -->
         <div class="circle" id="circle">
@@ -78,7 +82,6 @@
 
         </div>
     </div>
-
 </div>
 
 <script src="style.js"></script>

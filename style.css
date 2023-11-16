@@ -240,3 +240,23 @@ label {
     cursor: pointer;
 }
 
+#congratulationsPopup {
+
+    width: 400px;
+    height: 200px;
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #e36c52;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+}
+
+#closeBtn{
+    width: 100%;
+    height: 50px;
+    margin-top:60px;
+}

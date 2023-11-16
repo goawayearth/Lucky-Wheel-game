@@ -10,6 +10,7 @@ let circleBtn = document.getElementById("circle");
 let selectModel = document.getElementById("select_model");
 let randomModel = document.getElementById("random-model");
 let textArea = document.getElementById("show2");
+let congWords = document.getElementById("conWords");
 
 // 一些全局参数
 let isFlag = false; // 记录当前是否可以点击旋转按钮
@@ -158,6 +159,8 @@ function run(angle){
             basic = 3600;
             isOpti = true;
             clearInterval(timer);
+            congWords.innerHTML = "恭喜您获得："+prizeText+"！";
+            showCongratulations();
             let date = new Date();
             let str = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+" "+niName+"获得:"+prizeText+"<br>";
             let str1 = textArea.innerHTML;
@@ -220,4 +223,18 @@ function getLucky(){
             run(201.5);
             break;
     }
+}
+
+
+//祝贺弹窗
+function showCongratulations() {
+    // 显示弹窗
+    var popup = document.getElementById('congratulationsPopup');
+    popup.style.display = 'block';
+}
+
+function closeCongratulations() {
+    // 关闭弹窗
+    var popup = document.getElementById('congratulationsPopup');
+    popup.style.display = 'none';
 }

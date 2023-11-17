@@ -13,8 +13,9 @@ let textArea = document.getElementById("show2");
 let congWords = document.getElementById("conWords");
 let stopSelect = document.getElementById("stop-model");
 let stopModelBtn = document.getElementById("stop-model-btn");
+let begin = 22.5;
 // 一些全局参数
-let isFlag = false; // 记录当前是否可以点击旋转按钮
+let ableRotate = false; // 记录当前是否可以点击旋转按钮
 let pauseRunBtnIsOk = false; // 记录当前是否可以点击停止按钮
 let timer = null; // 定时器
 let rate = 0.02; // 默认转速改变速率
@@ -26,9 +27,9 @@ let prizeText = "";// 抽中的奖项
 let niName = "";//抽奖者的名字
 let stopModel = 0;//游戏停止的模式，涉及到转动的模式，默认是逐渐停止
 // 这里是奖项的名字
-let prize = [["数码1号","数码2号","数码3号","数码4号","数码5号","数码6号","数码7号","未中奖"],
-            ["家电1号","家电2号","家电3号","4号家电","5号家电","6号家电","7号家电","未中奖"],
-            ["1号学习","2号学习","3号学习","4号学习","5号学习","6号学习","7号学习","未中奖"]];
+let prize = [["笔记本电脑","电视机","数码相机","智能手机","游戏机","智能手表","无线耳机","未中奖"],
+            ["冰箱","空调","吸尘器","洗衣机","微波炉","咖啡机","热水器","未中奖"],
+            ["跑步机","高尔夫球具","网球拍","自行车","露营帐篷","登山鞋","篮球","未中奖"]];
     
 // 权重数组 不同奖项的权重值，权重越高越容易中这个区域
 let prizeWeight = [1, 3, 5, 7, 10, 15, 20, 30];
@@ -46,59 +47,77 @@ for(let i = 0 ; i < textAll.length ; i++){
 
 // 当选择的奖品类型发生变化的触发函数，会给扇形重新赋值
 selectModel.onchange = function (){
-    getText();
-}
-
-stopSelect.onchange = function(){
-    let text = stopSelect.value;
-    if(text == "option1"){
-        stopModel = 0;
+    if(isStart){
+        getText();
     }
     else{
-        stopSelect = 1;
+        selectModel.selectedIndex = model;
+    }
+}
+
+// 当停止模式改变的时候，stopModel也随着改变
+stopSelect.onchange = function(){
+    if(isStart){
+        let text = stopSelect.value;
+        if(text == "option1"){
+            stopModel = 0;
+        }
+        else{
+            stopModel = 1;
+        }
+    }
+    else{
+        stopSelect.selectedIndex = stopModel;
     }
 }
 // 随机选择奖品类型的按钮功能
 randomModel.onclick = function() {
-
-    let times = 0;
-    let lastSelect = 0;
-    let intervalId = setInterval(function() {
-        times++;
-        if(times > 20){
-            clearInterval(intervalId);
-        }
-        var num = Math.floor(Math.random() * 3);
-        while(num == lastSelect){
-            num = Math.floor(Math.random() * 3);
-        }
-        lastSelect = num;
-        selectModel.selectedIndex = num;
-        getText();
-    }, 200);
+    if(isStart) {
+        let times = 0;
+        let lastSelect = 0;
+        let intervalId = setInterval(function () {
+            times++;
+            if (times > 20) {
+                clearInterval(intervalId);
+            }
+            var num = Math.floor(Math.random() * 3);
+            while (num == lastSelect) {
+                num = Math.floor(Math.random() * 3);
+            }
+            lastSelect = num;
+            selectModel.selectedIndex = num;
+            getText();
+        }, 200);
+    }
 }
 
+/**
+ * 当点击随机选择停止模式的按钮之后，随机多次变化之后，更新stopModel
+ */
 stopModelBtn.onclick = function(){
+    if(isStart){
+        let time = Math.random()*10+10;
+        let intervalId = setInterval(function() {
+            time--;
+            if(time <= 0){
+                clearInterval(intervalId);
+            }
+            let num = stopSelect.selectedIndex;
+            num = (num+1) % 2;
+            stopSelect.selectedIndex = num;
+            stopModel = num;
+        }, 200);
+    }
 
-    let time = Math.random()*10+10;
-
-    let intervalId = setInterval(function() {
-        time--;
-        if(time <= 0){
-            clearInterval(intervalId);
-        }
-        let num = stopSelect.selectedIndex;
-        num = (num+1) % 2;
-        stopSelect.selectedIndex = num;
-        stopModel = num;
-    }, 200);
 }
 
-
+/**
+ * 点击开始游戏按钮，开启游戏
+ */
 startGameBtn.onclick=function(){
     if(isStart){
         isStart=false;
-        isFlag=true;
+        ableRotate=true;
         niName = prompt("请输入您的名字：");
         while(!niName){
             niName = prompt("请重新输入您的名字：");
@@ -117,72 +136,154 @@ startGameBtn.onclick=function(){
     }
 };
 
+/**
+ * 转盘中心的旋转按钮
+ */
 circleBtn.onclick=function(){
     if(stopModel == 0){
-        if(isFlag){
-            isFlag=false;
-            getLucky();
+        if(ableRotate){
+            ableRotate=false;
+            runNormal();
         }
     }
     else{
         //匀速旋转
+        if(ableRotate){
+            ableRotate = false;
+            runStable();
+        }
+
     }
 };
 
-// 开始按钮
+/**
+ * 开始旋转按钮，开始正向旋转
+ */
 startRunBtn.onclick=function(){
     if(stopModel == 0){
-        if(isFlag){
-            isFlag=false;
-            getLucky();
+        if(ableRotate){
+            ableRotate=false; // 不允许正转和反转
+            runNormal();
         }
     }
     else{
         //匀速旋转
+        if(ableRotate){
+            ableRotate = false; // 不允许正转和反转
+            runStable();
+        }
     }
 
 };
 
+/**
+ * 停止按钮
+ */
 pauseRunBtn.onclick=function(){
+    if(pauseRunBtnIsOk){
+        ableRotate=true; //可以正反转
+        pauseRunBtnIsOk = false;
+        clearInterval(timer);
+        ableRotate = true;//表示可以转动
+        console.log("begin:"+begin);
+        if(stopModel == 1){
+            let prizeNum = 0;
+            if(begin<=45) {
+                if(isOpti)prizeNum=0;
+                else prizeNum=4;
+            }
+            else if(begin>45 && begin<=90){
+                if (isOpti)prizeNum=1;
+                else prizeNum = 5;
+            }
+            else if(begin>90 && begin<=135){
+                if(isOpti)prizeNum=2;
+                else prizeNum=6;
+            }
+            else if(begin>135 && begin<=180){
+                if(isOpti)prizeNum=3;
+                else prizeNum=7;
+            }
+            else if(begin>180 && begin<=225){
+                if(isOpti)prizeNum=7;
+                else prizeNum=3;
+            }
+            else if(begin>225 && begin<=270){
+                if(isOpti)prizeNum=6;
+                else prizeNum=2;
+            }
+            else if(begin>270 && begin<=315){
+                if(isOpti)prizeNum=5;
+                else prizeNum=1;
+            }
+            else if(begin>315 && begin<=360){
+                if(isOpti)prizeNum=4;
+                else prizeNum=0;
+            }
+
+            prizeText = prize[model][prizeNum];
+            congWords.innerHTML = "恭喜您获得："+prizeText+"！";
+            showCongratulations();
+            // 获取当前时间
+            let currentTime = new Date();
+            // 获取时、分、秒
+            let hours = currentTime.getHours();
+            let minutes = currentTime.getMinutes();
+            let seconds = currentTime.getSeconds();
+            // 格式化输出
+            // 如果数字小于10，前面添加0
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            // 输出格式化后的时间
+            let formattedTime = hours + ':' + minutes + ':' + seconds;
+            let str =formattedTime+" "+niName+"获得:"+prizeText+"<br>";
+            let str1 = textArea.innerHTML;
+            str = str + str1;
+            textArea.innerHTML = str;
+        }
+    }
+    else{
+        alert("当前状态下无法使用该功能！");
+    }
+}
+
+/**
+ * 加速按钮
+ */
+speedUpBtn.onclick=function(){
+    if(pauseRunBtnIsOk){
+        rate = 0.1;
+    }
+    else{
+        alert("当前状态下不能使用！");
+    }
+}
+
+/**
+ * 反向旋转按钮
+ */
+reverseRunBtn.onclick = function(){
     if(stopModel == 0){
-        if(pauseRunBtnIsOk){
-            isFlag=true;
-            pauseRunBtnIsOk = false;
-            clearInterval(timer);
+        if(ableRotate){
+            ableRotate=false;
+            isOpti = false;
+            runNormal();
         }
         else{
             alert("当前状态下无法使用该功能！");
         }
     }
     else{
-        //匀速旋转时候的停止
-    }
-}
-
-speedUpBtn.onclick=function(){
-    if(stopModel == 0){
-        if(pauseRunBtnIsOk){
-            rate = 0.1;
+        //匀速旋转时候的反向
+        if(ableRotate){
+            ableRotate=false;
+            isOpti=false;
+            runStable();
         }
         else{
-            alert("当前状态下不能使用！");
+            alert("当前状态下无法使用该功能！");
         }
-    }
-    else{
-        //匀速旋转时候的加速
-    }
-}
-
-reverseRunBtn.onclick = function(){
-    if(stopModel == 0){
-        if(isFlag){
-            isFlag=false;
-            isOpti = false;
-            getLucky();
-        }
-    }
-    else{
-        //匀速旋转时候的反向
     }
 }
 
@@ -191,9 +292,9 @@ function getText(){
     var m = selectModel.value;
     switch (m){
         case "option1":model = 0;break;
-        case "option2":console.log("家电");model = 1;break;
+        case "option2":model = 1;break;
         case "option3":model = 2;break;
-        default:console.log("默认");model=0;break;
+        default:model=0;break;
     }
     for(let i = 0 ; i < textAll.length ; i++){
         textAll[i].innerHTML = prize[model][i];
@@ -203,7 +304,6 @@ function getText(){
 
 // 扇形发生转动的最核心的模块
 function run(angle){
-    let begin = 0;
     pauseRunBtnIsOk = true;
     timer = setInterval(function(){
 
@@ -213,9 +313,11 @@ function run(angle){
         else{
             wapper.style.transform="rotate("+(-begin)+"deg)";
         }
+        // 这是一个算法 可以出现转盘又很快到慢慢变慢的效果
+        begin+=Math.ceil(basic+angle-begin)*rate;
 
         if(begin >= (basic+angle)){
-            isFlag=true;
+            ableRotate=true;
             pauseRunBtnIsOk = false;
             rate = 0.02;
             basic = 3600;
@@ -241,17 +343,28 @@ function run(angle){
             let str1 = textArea.innerHTML;
             str = str + str1;
             textArea.innerHTML = str;
+            begin = begin % 360;
         }
-        // 这是一个算法 可以出现转盘又很快到慢慢变慢的效果
-        begin+=Math.ceil(basic+angle-begin)*rate;
+
 
     },70);
 }
 
-
+function runStable(){
+    pauseRunBtnIsOk = true;
+    timer = setInterval(function(){
+        begin = (rate * 1440 + begin) % 360;
+        if(isOpti){
+            wapper.style.transform="rotate("+(begin)+"deg)";
+        }
+        else{
+            wapper.style.transform="rotate("+(-begin)+"deg)";
+        }
+    },70);
+}
 
 // 转轮开始旋转
-function getLucky(){
+function runNormal(){
     let weightRandom = parseInt(Math.random()*totalSum);
     let accumulatedWeight = 0;
     let randomIndex = 0;

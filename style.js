@@ -83,6 +83,13 @@ stopModelBtn.onclick = function(){
         stopSelect.selectedIndex = num;
         console.log("停止模式："+num);
     }, 200);
+    let text = stopSelect.value;
+    if(text == "option1"){
+        stopModel = 0;
+    }
+    else{
+        stopSelect = 1;
+    }
 }
 
 
@@ -109,11 +116,17 @@ startGameBtn.onclick=function(){
 };
 
 circleBtn.onclick=function(){
-    if(isFlag){
-        isFlag=false;
-        getLucky();
+    if(stopModel == 0){
+        if(isFlag){
+            isFlag=false;
+            getLucky();
+        }
+    }
+    else{
+        //匀速旋转
     }
 };
+
 // 开始按钮
 startRunBtn.onclick=function(){
     if(stopModel == 0){
@@ -218,6 +231,7 @@ function run(angle){
 
     },70);
 }
+
 
 
 // 转轮开始旋转

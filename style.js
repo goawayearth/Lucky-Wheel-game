@@ -73,23 +73,19 @@ randomModel.onclick = function() {
 }
 
 stopModelBtn.onclick = function(){
-    let times = 0;
+
+    let time = Math.random()*10+10;
+
     let intervalId = setInterval(function() {
-        times++;
-        if(times > 20){
+        time--;
+        if(time <= 0){
             clearInterval(intervalId);
         }
-        let num = Math.floor(Math.random() * 2);
+        let num = stopSelect.selectedIndex;
+        num = (num+1) % 2;
         stopSelect.selectedIndex = num;
-        console.log("停止模式："+num);
+        stopModel = num;
     }, 200);
-    let text = stopSelect.value;
-    if(text == "option1"){
-        stopModel = 0;
-    }
-    else{
-        stopSelect = 1;
-    }
 }
 
 
@@ -238,15 +234,16 @@ function run(angle){
 function getLucky(){
     //获取30以内的随机数
     let weightRandom = parseInt(Math.random()*30);
+    let accumulatedWeight = 0;
+    let randomIndex = 0;
     // 合并
-    let concatAfterArr = prizeWeight.concat(weightRandom);
-    // 排序
-    let  sortedWeightArr  = concatAfterArr.sort(function(a,b){ return a-b });
-
-    // randomIndex是奖项的索引 结果是【1,7】
-    let randomIndex = sortedWeightArr.indexOf(weightRandom);
-    randomIndex = Math.min(randomIndex, prize.length -1);
-
+    for(let i = 0;i < 8;i++){
+        accumulatedWeight += prizeWeight[i];
+        if(weightRandom <= accumulatedWeight){
+            randomIndex = i;
+            break;
+        }
+    }
     // 获奖的内容
     prizeText = prize[model][randomIndex];
     console.log("中奖奖项"+prizeText);

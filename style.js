@@ -31,7 +31,13 @@ let prize = [["数码1号","数码2号","数码3号","数码4号","数码5号","
             ["1号学习","2号学习","3号学习","4号学习","5号学习","6号学习","7号学习","未中奖"]];
     
 // 权重数组 不同奖项的权重值，权重越高越容易中这个区域
-let prizeWeight = [1,3,5,7,10,15,20,30];
+let prizeWeight = [1, 3, 5, 7, 10, 15, 20, 30];
+// 使用 reduce 方法计算总和
+let totalSum = prizeWeight.reduce(function (accumulator, currentValue) {
+    return accumulator + currentValue;
+}, 0);
+
+console.log(totalSum); // 输出总和
 
 // 给每一个div赋予文字，最开始的默认值
 for(let i = 0 ; i < textAll.length ; i++){
@@ -200,21 +206,7 @@ function run(angle){
     let begin = 0;
     pauseRunBtnIsOk = true;
     timer = setInterval(function(){
-        if(begin >= (basic+angle)){
-            isFlag=true;
-            pauseRunBtnIsOk = false;
-            rate = 0.02;
-            basic = 3600;
-            isOpti = true;
-            clearInterval(timer);
-            congWords.innerHTML = "恭喜您获得："+prizeText+"！";
-            showCongratulations();
-            let date = new Date();
-            let str = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+" "+niName+"获得:"+prizeText+"<br>";
-            let str1 = textArea.innerHTML;
-            str = str + str1;
-            textArea.innerHTML = str;
-        }
+
         if(isOpti){
             wapper.style.transform="rotate("+(begin)+"deg)";
         }
@@ -222,6 +214,34 @@ function run(angle){
             wapper.style.transform="rotate("+(-begin)+"deg)";
         }
 
+        if(begin >= (basic+angle)){
+            isFlag=true;
+            pauseRunBtnIsOk = false;
+            rate = 0.02;
+            basic = 3600;
+            isOpti = true;
+            //弹窗设置
+            clearInterval(timer);
+            congWords.innerHTML = "恭喜您获得："+prizeText+"！";
+            showCongratulations();
+            // 获取当前时间
+            let currentTime = new Date();
+            // 获取时、分、秒
+            let hours = currentTime.getHours();
+            let minutes = currentTime.getMinutes();
+            let seconds = currentTime.getSeconds();
+            // 格式化输出
+            // 如果数字小于10，前面添加0
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            // 输出格式化后的时间
+            let formattedTime = hours + ':' + minutes + ':' + seconds;
+            let str =formattedTime+" "+niName+"获得:"+prizeText+"<br>";
+            let str1 = textArea.innerHTML;
+            str = str + str1;
+            textArea.innerHTML = str;
+        }
         // 这是一个算法 可以出现转盘又很快到慢慢变慢的效果
         begin+=Math.ceil(basic+angle-begin)*rate;
 
@@ -232,8 +252,7 @@ function run(angle){
 
 // 转轮开始旋转
 function getLucky(){
-    //获取30以内的随机数
-    let weightRandom = parseInt(Math.random()*30);
+    let weightRandom = parseInt(Math.random()*totalSum);
     let accumulatedWeight = 0;
     let randomIndex = 0;
     // 合并
@@ -249,28 +268,40 @@ function getLucky(){
     console.log("中奖奖项"+prizeText);
     switch(randomIndex) {
         case 0:
-            run(22.5);
+            if(isOpti){
+                run(22.5);
+            }
+            else {
+                run(338.5);
+            }
             break;
         case 1:
-            run(66.5);
+            if(isOpti) run(66.5);
+            else run(294.5);
             break;
         case 2:
-            run(112.5);
+            if(isOpti) run(112.5);
+            else run(247.5);
             break;
         case 3:
-            run(157.5);
+            if(isOpti) run(157.5);
+            else run(201.5);
             break;
         case 4:
-            run(338.5);
+            if(isOpti) run(338.5);
+            else run(22.5);
             break;
         case 5:
-            run(294.5);
+            if(isOpti) run(294.5);
+            else run(66.5);
             break;
         case 6:
-            run(247.5);
+            if(isOpti) run(247.5);
+            else run(112.5);
             break;
         case 7:
-            run(201.5);
+            if(isOpti) run(201.5);
+            else run(157.5);
             break;
     }
 }

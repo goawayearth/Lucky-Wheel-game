@@ -1,3 +1,42 @@
+
+class PopUpWin{
+    constructor() {
+        this.popup = document.getElementById('congratulationsPopup');
+        this.congWords = document.getElementById("conWords");
+        this.closeBtn = document.getElementById("closeBtn");
+        this.closeBtn.onclick = ()=>this.closeCongratulations();
+    }
+    //祝贺弹窗
+    showCongratulations() {
+        // 显示弹窗
+        this.popup.style.display = 'block';
+    }
+
+    closeCongratulations() {
+        // 关闭弹窗
+        console.log("关闭弹窗！");
+        this.popup.style.display = 'none';
+    }
+
+}
+
+class ShowArea{
+    constructor() {
+        this.textArea = document.getElementById("show2");
+    }
+    upDateContent(str){
+        this.textArea.innerHTML = str;
+    }
+    getContent(){
+        return this.textArea.innerHTML;
+    }
+}
+
+
+// 弹窗类对象
+const popUpWin = new PopUpWin();
+const showArea = new ShowArea();
+
 // 获取html页面的元素
 let wapper = document.getElementById("wapper");
 let textAll = document.getElementsByClassName("text");
@@ -9,8 +48,7 @@ let reverseRunBtn = document.getElementById("reverse-run");
 let circleBtn = document.getElementById("circle");
 let selectModel = document.getElementById("select_model");
 let randomModel = document.getElementById("random-model");
-let textArea = document.getElementById("show2");
-let congWords = document.getElementById("conWords");
+
 let stopSelect = document.getElementById("stop-model");
 let stopModelBtn = document.getElementById("stop-model-btn");
 let begin = 22.5;
@@ -28,17 +66,15 @@ let niName = "";//抽奖者的名字
 let stopModel = 0;//游戏停止的模式，涉及到转动的模式，默认是逐渐停止
 // 这里是奖项的名字
 let prize = [["笔记本电脑","电视机","数码相机","智能手机","游戏机","智能手表","无线耳机","未中奖"],
-            ["冰箱","空调","吸尘器","洗衣机","微波炉","咖啡机","热水器","未中奖"],
-            ["跑步机","高尔夫球具","网球拍","自行车","露营帐篷","登山鞋","篮球","未中奖"]];
-    
+    ["冰箱","空调","吸尘器","洗衣机","微波炉","咖啡机","热水器","未中奖"],
+    ["跑步机","高尔夫球具","网球拍","自行车","露营帐篷","登山鞋","篮球","未中奖"]];
+
 // 权重数组 不同奖项的权重值，权重越高越容易中这个区域
 let prizeWeight = [1, 3, 5, 7, 10, 15, 20, 30];
 // 使用 reduce 方法计算总和
 let totalSum = prizeWeight.reduce(function (accumulator, currentValue) {
     return accumulator + currentValue;
 }, 0);
-
-console.log(totalSum); // 输出总和
 
 // 给每一个div赋予文字，最开始的默认值
 for(let i = 0 ; i < textAll.length ; i++){
@@ -222,8 +258,8 @@ pauseRunBtn.onclick=function(){
             }
 
             prizeText = prize[model][prizeNum];
-            congWords.innerHTML = "恭喜您获得："+prizeText+"！";
-            showCongratulations();
+            popUpWin.congWords.innerHTML = "恭喜您获得："+prizeText+"！";
+            popUpWin.showCongratulations();
             // 获取当前时间
             let currentTime = new Date();
             // 获取时、分、秒
@@ -238,9 +274,11 @@ pauseRunBtn.onclick=function(){
             // 输出格式化后的时间
             let formattedTime = hours + ':' + minutes + ':' + seconds;
             let str =formattedTime+" "+niName+"获得:"+prizeText+"<br>";
-            let str1 = textArea.innerHTML;
+            // let str1 = textArea.innerHTML;
+            let str1 = showArea.getContent();
             str = str + str1;
-            textArea.innerHTML = str;
+            // textArea.innerHTML = str;
+            showArea.upDateContent(str);
         }
     }
     else{
@@ -324,8 +362,8 @@ function run(angle){
             isOpti = true;
             //弹窗设置
             clearInterval(timer);
-            congWords.innerHTML = "恭喜您获得："+prizeText+"！";
-            showCongratulations();
+            popUpWin.congWords.innerHTML = "恭喜您获得："+prizeText+"！";
+            popUpWin.showCongratulations();
             // 获取当前时间
             let currentTime = new Date();
             // 获取时、分、秒
@@ -340,9 +378,11 @@ function run(angle){
             // 输出格式化后的时间
             let formattedTime = hours + ':' + minutes + ':' + seconds;
             let str =formattedTime+" "+niName+"获得:"+prizeText+"<br>";
-            let str1 = textArea.innerHTML;
+            // let str1 = textArea.innerHTML;
+            let str1 = showArea.getContent();
             str = str + str1;
-            textArea.innerHTML = str;
+            // textArea.innerHTML = str;
+            showArea.upDateContent(str);
             begin = begin % 360;
         }
 
@@ -419,16 +459,3 @@ function runNormal(){
     }
 }
 
-
-//祝贺弹窗
-function showCongratulations() {
-    // 显示弹窗
-    var popup = document.getElementById('congratulationsPopup');
-    popup.style.display = 'block';
-}
-
-function closeCongratulations() {
-    // 关闭弹窗
-    var popup = document.getElementById('congratulationsPopup');
-    popup.style.display = 'none';
-}
